@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client"
-import type { Metrics } from "../Models/metrics";
+import type { Metrics } from "../Models/Metrics";
 
 const socket = io('http://localhost:3000')
 
@@ -40,7 +40,7 @@ function Dashboard() {
         <h1>System monitor</h1>
         <p>Status: {connected ? "Connected" : "Disconnected"} </p>
         {agents.map(agent => (
-            <div key={agent.hostname}>
+            <div  className="bg-blue-500 text-white p-4 rounded-lg" key={agent.hostname}>
                 <h2>{agent.hostname}</h2>
                 <p>{new Date(agent.timestamp).toLocaleTimeString()}</p>
                 <p>Cpu: {agent.cpu}</p>
