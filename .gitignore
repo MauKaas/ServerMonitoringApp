@@ -1,0 +1,71 @@
+# Dependencies
+node_modules/
+*/node_modules/
+Agent/node_modules/
+Server/node_modules/
+Dashboard/node_modules/
+
+# Build outputs
+dist/
+build/
+*/dist/
+*/build/
+Agent/dist/
+Server/dist/
+Dashboard/dist/
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+*.env
+*/.env
+Agent/.env
+Server/.env
+Dashboard/.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Testing
+coverage/
+*.lcov
+.nyc_output/
+
+# Vite (Dashboard specific)
+Dashboard/.vite/
+.vite/
+
+# Production
+*.production
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# OS files
+Thumbs.db
