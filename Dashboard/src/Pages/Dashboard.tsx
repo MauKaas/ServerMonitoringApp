@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client"
 import type { Metrics } from "../Models/Metrics";
+import type { Status } from "../Models/status"
 import Progressbar from "../Components/Progressbar/Progressbar";
 
 const socket = io('http://localhost:3000')
@@ -8,11 +9,22 @@ const socket = io('http://localhost:3000')
 function Dashboard() {
     const [connected, setConnected] = useState<boolean>(false)
     const [agents, setAgents] = useState<Metrics[]>([])
+    const [offlineAgents, setOfflineAgents] = useState<string[]>([])
 
     useEffect(() => {
         socket.on("connect", () => {
             setConnected(true)
             socket.emit("getData")
+        })
+
+        socket.on("status", (data: Status) => {
+            if(data.status == false){
+                console.log(`${data.agentHostName} is offline`)
+                setOfflineAgents(current => [...current, data.agentHostName])
+            } else {
+                setOfflineAgents(prev => prev.filter(hostname => hostname !== data.agentHostName))
+            }
+            
         })
 
         socket.on("disconnect", () => setConnected(false))
@@ -22,7 +34,8 @@ function Dashboard() {
         })
 
         socket.on('update', (data: Metrics) => {
-        setAgents(prev => prev.map(a => a.hostname === data.hostname ? data : a));
+            setAgents(prev => prev.map(a => a.hostname === data.hostname ? data : a));
+            setOfflineAgents(prev => prev.filter(h => h !== data.hostname))
         });
 
         return () => {
@@ -30,6 +43,7 @@ function Dashboard() {
         socket.off('disconnect');
         socket.off('allData');
         socket.off('update');
+        socket.off("status")
         };
     }, []);
 
@@ -47,10 +61,15 @@ function Dashboard() {
                 <div className="flex-1 min-w-75 bg-zinc-800 rounded-2xl p-4" key={agent.hostname}>
                     <h2 className="text-slate-100 text-xl font-bold mb-2">{agent.hostname}</h2>
                     <p className="text-slate-100 text-sm">{new Date(agent.timestamp).toLocaleTimeString()}</p>
+                    
                     <p className="text-slate-100">Cpu: {agent.cpu}</p>
                     <Progressbar value={agent.cpu} color="bg-pink-600"></Progressbar>
+
                     <p className="text-slate-100">Mem: {agent.memoryUsed}/{agent.memoryTotal}</p>
                     <Progressbar value={agent.memory} color="bg-lime-600"></Progressbar>
+                
+                    <p className="text-slate-100">{offlineAgents.includes(agent.hostname) ? "Offline" : "Online"}</p>
+                    
                 </div>
             ))}
             </div>

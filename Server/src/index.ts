@@ -13,6 +13,7 @@ const io = new Server(server, {cors: {origin: "http://localhost:5173"}})
 const metric = new Map()
 
 io.on("connection", (socket) => {
+    const agentHostName = socket.handshake.query.id as string;
     console.log ("Client Connected: " + socket.id)
 
     socket.on("metrics", (data) => {
@@ -28,6 +29,7 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         console.log("Client disconnected:" + socket.id)
+        io.emit("status", { status: false, agentHostName: agentHostName })
     })
 })
 

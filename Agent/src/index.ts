@@ -3,7 +3,9 @@ import * as si from "systeminformation"
 import * as os from "os"
 import { time } from "console"
 
-const socket = io("http://localhost:3000")
+const socket = io("http://localhost:3000", {
+    query: { id: os.hostname() }
+})
 
 socket.on("connect", () => {
     console.log("Succesfull connection :)")
